@@ -1,0 +1,154 @@
+'SysConfig - building file: "../empty.syscfg"'
+"D:/CCS/sysconfig_1.26.2/sysconfig_cli.bat" -s "D:/CCS/mspm0_sdk_2_11_00_07/.metadata/product.json" --script "D:/CCS/Project/gpt_use/empty.syscfg" -o "." --compiler ticlang
+Running script...
+Validating...
+info: MOTOR_PWM(/ti/driverlib/PWM): Peripheral does not retain register contents in STOP or STANDBY modes. User should take care to save and restore register configuration in application. See Retention Configuration section for more details.
+info: ENCODER_LEFT(/ti/driverlib/QEI): Peripheral does not retain register contents in STOP or STANDBY modes. User should take care to save and restore register configuration in application. See Retention Configuration section for more details.
+Generating Code (empty.syscfg)...
+Unchanged D:\CCS\Project\gpt_use\Debug\device_linker.cmd...
+Unchanged D:\CCS\Project\gpt_use\Debug\device.opt...
+Unchanged D:\CCS\Project\gpt_use\Debug\device.cmd.genlibs...
+Unchanged D:\CCS\Project\gpt_use\Debug\ti_msp_dl_config.c...
+Unchanged D:\CCS\Project\gpt_use\Debug\ti_msp_dl_config.h...
+Unchanged D:\CCS\Project\gpt_use\Debug\Event.dot...
+'Finished building: "../empty.syscfg"'
+' '
+'Arm Compiler - building file: "../empty.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"empty.d_raw" -MT"empty.o"  @"./device.opt"  -o"empty.o" "../empty.c"
+'Arm Compiler - building file: "ti_msp_dl_config.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"ti_msp_dl_config.d_raw" -MT"ti_msp_dl_config.o"  @"./device.opt"  -o"ti_msp_dl_config.o" "ti_msp_dl_config.c"
+'Arm Compiler - building file: "D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"startup_mspm0g350x_ticlang.d_raw" -MT"startup_mspm0g350x_ticlang.o"  @"./device.opt"  -o"startup_mspm0g350x_ticlang.o" "D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c"
+'Arm Compiler - building file: "../App/robot_app.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"App/robot_app.d_raw" -MT"App/robot_app.o"  @"./device.opt"  -o"App/robot_app.o" "../App/robot_app.c"
+'Finished building: "D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c"'
+'Finished building: "../empty.c"'
+' '
+' '
+'Finished building: "ti_msp_dl_config.c"'
+'Arm Compiler - building file: "../Bsp/board.c"'
+'Finished building: "../App/robot_app.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/board.d_raw" -MT"Bsp/board.o"  @"./device.opt"  -o"Bsp/board.o" "../Bsp/board.c"
+' '
+' '
+'Arm Compiler - building file: "../Bsp/encoder.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/encoder.d_raw" -MT"Bsp/encoder.o"  @"./device.opt"  -o"Bsp/encoder.o" "../Bsp/encoder.c"
+'Arm Compiler - building file: "../Bsp/i2c_bus.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/i2c_bus.d_raw" -MT"Bsp/i2c_bus.o"  @"./device.opt"  -o"Bsp/i2c_bus.o" "../Bsp/i2c_bus.c"
+'Arm Compiler - building file: "../Bsp/startup.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/startup.d_raw" -MT"Bsp/startup.o"  @"./device.opt"  -o"Bsp/startup.o" "../Bsp/startup.c"
+'Finished building: "../Bsp/startup.c"'
+'Finished building: "../Bsp/board.c"'
+' '
+' '
+'Finished building: "../Bsp/encoder.c"'
+'Arm Compiler - building file: "../Bsp/tb6612.c"'
+'Finished building: "../Bsp/i2c_bus.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/tb6612.d_raw" -MT"Bsp/tb6612.o"  @"./device.opt"  -o"Bsp/tb6612.o" "../Bsp/tb6612.c"
+' '
+' '
+'Arm Compiler - building file: "../Devices/mpu6050.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Devices/mpu6050.d_raw" -MT"Devices/mpu6050.o"  @"./device.opt"  -o"Devices/mpu6050.o" "../Devices/mpu6050.c"
+'Arm Compiler - building file: "../Devices/oled.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Devices/oled.d_raw" -MT"Devices/oled.o"  @"./device.opt"  -o"Devices/oled.o" "../Devices/oled.c"
+'Arm Compiler - building file: "../Motion/controller.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Motion/controller.d_raw" -MT"Motion/controller.o"  @"./device.opt"  -o"Motion/controller.o" "../Motion/controller.c"
+'Finished building: "../Motion/controller.c"'
+'Finished building: "../Bsp/tb6612.c"'
+' '
+' '
+'Finished building: "../Devices/mpu6050.c"'
+'Finished building: "../Devices/oled.c"'
+' '
+' '
+'Arm Compiler - building file: "../Motion/line_follow.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Motion/line_follow.d_raw" -MT"Motion/line_follow.o"  @"./device.opt"  -o"Motion/line_follow.o" "../Motion/line_follow.c"
+'Arm Compiler - building file: "../Motion/pid.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Motion/pid.d_raw" -MT"Motion/pid.o"  @"./device.opt"  -o"Motion/pid.o" "../Motion/pid.c"
+'Arm Compiler - building file: "../Motion/quadrature.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Motion/quadrature.d_raw" -MT"Motion/quadrature.o"  @"./device.opt"  -o"Motion/quadrature.o" "../Motion/quadrature.c"
+'Finished building: "../Motion/line_follow.c"'
+'Finished building: "../Motion/pid.c"'
+'Finished building: "../Motion/quadrature.c"'
+' '
+' '
+' '
+'SysConfig - building file: "../empty.syscfg"'
+"D:/CCS/sysconfig_1.26.2/sysconfig_cli.bat" -s "D:/CCS/mspm0_sdk_2_11_00_07/.metadata/product.json" --script "D:/CCS/Project/gpt_use/empty.syscfg" -o "." --compiler ticlang
+Running script...
+Validating...
+info: MOTOR_PWM(/ti/driverlib/PWM): Peripheral does not retain register contents in STOP or STANDBY modes. User should take care to save and restore register configuration in application. See Retention Configuration section for more details.
+info: ENCODER_LEFT(/ti/driverlib/QEI): Peripheral does not retain register contents in STOP or STANDBY modes. User should take care to save and restore register configuration in application. See Retention Configuration section for more details.
+Generating Code (empty.syscfg)...
+Unchanged D:\CCS\Project\gpt_use\Debug\device_linker.cmd...
+Unchanged D:\CCS\Project\gpt_use\Debug\device.opt...
+Unchanged D:\CCS\Project\gpt_use\Debug\device.cmd.genlibs...
+Unchanged D:\CCS\Project\gpt_use\Debug\ti_msp_dl_config.c...
+Unchanged D:\CCS\Project\gpt_use\Debug\ti_msp_dl_config.h...
+Unchanged D:\CCS\Project\gpt_use\Debug\Event.dot...
+'Finished building: "../empty.syscfg"'
+' '
+'Arm Compiler - building file: "../empty.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"empty.d_raw" -MT"empty.o"  @"./device.opt"  -o"empty.o" "../empty.c"
+'Arm Compiler - building file: "ti_msp_dl_config.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"ti_msp_dl_config.d_raw" -MT"ti_msp_dl_config.o"  @"./device.opt"  -o"ti_msp_dl_config.o" "ti_msp_dl_config.c"
+'Arm Compiler - building file: "D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"startup_mspm0g350x_ticlang.d_raw" -MT"startup_mspm0g350x_ticlang.o"  @"./device.opt"  -o"startup_mspm0g350x_ticlang.o" "D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c"
+'Arm Compiler - building file: "../App/robot_app.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"App/robot_app.d_raw" -MT"App/robot_app.o"  @"./device.opt"  -o"App/robot_app.o" "../App/robot_app.c"
+'Finished building: "D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c"'
+'Finished building: "../empty.c"'
+' '
+' '
+'Finished building: "ti_msp_dl_config.c"'
+'Arm Compiler - building file: "../Bsp/board.c"'
+'Finished building: "../App/robot_app.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/board.d_raw" -MT"Bsp/board.o"  @"./device.opt"  -o"Bsp/board.o" "../Bsp/board.c"
+' '
+' '
+'Arm Compiler - building file: "../Bsp/encoder.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/encoder.d_raw" -MT"Bsp/encoder.o"  @"./device.opt"  -o"Bsp/encoder.o" "../Bsp/encoder.c"
+'Arm Compiler - building file: "../Bsp/i2c_bus.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/i2c_bus.d_raw" -MT"Bsp/i2c_bus.o"  @"./device.opt"  -o"Bsp/i2c_bus.o" "../Bsp/i2c_bus.c"
+'Arm Compiler - building file: "../Bsp/startup.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/startup.d_raw" -MT"Bsp/startup.o"  @"./device.opt"  -o"Bsp/startup.o" "../Bsp/startup.c"
+'Finished building: "../Bsp/startup.c"'
+'Finished building: "../Bsp/board.c"'
+' '
+' '
+'Finished building: "../Bsp/encoder.c"'
+'Arm Compiler - building file: "../Bsp/tb6612.c"'
+' '
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Bsp/tb6612.d_raw" -MT"Bsp/tb6612.o"  @"./device.opt"  -o"Bsp/tb6612.o" "../Bsp/tb6612.c"
+'Finished building: "../Bsp/i2c_bus.c"'
+'Arm Compiler - building file: "../Devices/mpu6050.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Devices/mpu6050.d_raw" -MT"Devices/mpu6050.o"  @"./device.opt"  -o"Devices/mpu6050.o" "../Devices/mpu6050.c"
+' '
+'Arm Compiler - building file: "../Devices/oled.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Devices/oled.d_raw" -MT"Devices/oled.o"  @"./device.opt"  -o"Devices/oled.o" "../Devices/oled.c"
+'Arm Compiler - building file: "../Motion/controller.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Motion/controller.d_raw" -MT"Motion/controller.o"  @"./device.opt"  -o"Motion/controller.o" "../Motion/controller.c"
+'Finished building: "../Bsp/tb6612.c"'
+'Finished building: "../Motion/controller.c"'
+' '
+' '
+'Finished building: "../Devices/mpu6050.c"'
+'Arm Compiler - building file: "../Motion/line_follow.c"'
+'Finished building: "../Devices/oled.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Motion/line_follow.d_raw" -MT"Motion/line_follow.o"  @"./device.opt"  -o"Motion/line_follow.o" "../Motion/line_follow.c"
+' '
+' '
+'Arm Compiler - building file: "../Motion/pid.c"'
+'Arm Compiler - building file: "../Motion/quadrature.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Motion/pid.d_raw" -MT"Motion/pid.o"  @"./device.opt"  -o"Motion/pid.o" "../Motion/pid.c"
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"Motion/quadrature.d_raw" -MT"Motion/quadrature.o"  @"./device.opt"  -o"Motion/quadrature.o" "../Motion/quadrature.c"
+'Finished building: "../Motion/line_follow.c"'
+' '
+'Finished building: "../Motion/quadrature.c"'
+'Finished building: "../Motion/pid.c"'
+' '
+' '
+'Arm Linker - building target: "gpt_use.out"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -g -Wall -Wl,-m"gpt_use.map" -Wl,-i"D:/CCS/mspm0_sdk_2_11_00_07/source" -Wl,-i"D:/CCS/Project/gpt_use" -Wl,-i"D:/CCS/Project/gpt_use/Debug/syscfg" -Wl,-i"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib" -Wl,--diag_wrap=off -Wl,--display_error_number -Wl,--warn_sections -Wl,--xml_link_info="gpt_use_linkInfo.xml" -Wl,--rom_model -o "gpt_use.out" "./empty.o" "./ti_msp_dl_config.o" "./startup_mspm0g350x_ticlang.o" "./App/robot_app.o" "./Bsp/board.o" "./Bsp/encoder.o" "./Bsp/i2c_bus.o" "./Bsp/startup.o" "./Bsp/tb6612.o" "./Devices/mpu6050.o" "./Devices/oled.o" "./Motion/controller.o" "./Motion/line_follow.o" "./Motion/pid.o" "./Motion/quadrature.o" "../robot_link_options.cmd" -Wl,-l"./device_linker.cmd"  -Wl,-ldevice.cmd.genlibs -Wl,-llibc.a 
+'Finished building target: "gpt_use.out"'
+' '

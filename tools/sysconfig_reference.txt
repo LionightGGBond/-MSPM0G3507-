@@ -1,0 +1,84 @@
+// 仅供核对和离线编译验证；用户在 empty.syscfg 图形界面中手动配置。
+//@cliArgs --device "MSPM0G350X" --package "LQFP-64(PM)" --part "Default"
+//@v2CliArgs --device "MSPM0G3507" --package "LQFP-64(PM)"
+const SYSCTL = scripting.addModule("/ti/driverlib/SYSCTL");
+SYSCTL.forceDefaultClkConfig = true;
+const Board = scripting.addModule("/ti/driverlib/Board", {}, false);
+const GPIO = scripting.addModule("/ti/driverlib/GPIO", {}, false);
+function pins(name, items, input, interrupt) {
+    const group = GPIO.addInstance();
+    group.$name = name;
+    group.associatedPins.create(items.length);
+    items.forEach(function(item, i) {
+        const pin = group.associatedPins[i];
+        pin.$name = item[0];
+        pin.pin.$assign = item[1];
+        if (input) {
+            pin.direction = "INPUT";
+            pin.internalResistor = "PULL_DOWN";
+            pin.hysteresisControl = "ENABLE";
+        } else {
+            pin.initialValue = item[2] ? "SET" : "CLEARED";
+        }
+        if (interrupt) {
+            pin.interruptEn = true;
+            pin.polarity = "RISE_FALL";
+        }
+    });
+}
+pins("GPIO_MOTOR", [["AIN1","PA15",1],["AIN2","PA16",1],
+                    ["BIN1","PB0",1],["BIN2","PB1",1]], false, false);
+pins("GPIO_LED", [["HEART","PA22",0],["LEFT","PB14",0],["RIGHT","PB18",0]], false, false);
+pins("GPIO_BUZZER", [["OUT","PA21",0]], false, false);
+pins("GPIO_LINE", [["L2","PB13"],["L1","PB12"],["MID","PB11"],
+                   ["R1","PB10"],["R2","PB9"]], true, false);
+pins("GPIO_ENCODER", [["RIGHT_A","PA24"],["RIGHT_B","PA25"]], true, true);
+const PWM = scripting.addModule("/ti/driverlib/PWM", {}, false);
+const motor = PWM.addInstance();
+motor.$name = "MOTOR_PWM";
+motor.peripheral.$assign = "TIMG7";
+motor.peripheral.ccp0Pin.$assign = "PB15";
+motor.peripheral.ccp1Pin.$assign = "PB16";
+motor.clockPrescale = 1;
+motor.timerCount = 1600;
+motor.PWM_CHANNEL_0.dutyCycle = 0;
+motor.PWM_CHANNEL_1.dutyCycle = 0;
+motor.PWM_CHANNEL_0.ccValue = 1599;
+motor.PWM_CHANNEL_1.ccValue = 1599;
+motor.PWM_CHANNEL_0.shadowUpdateMode = "ZERO_EVT";
+motor.PWM_CHANNEL_1.shadowUpdateMode = "ZERO_EVT";
+const TIMER = scripting.addModule("/ti/driverlib/TIMER", {}, false);
+const control = TIMER.addInstance();
+control.$name = "CONTROL_TIMER";
+control.peripheral.$assign = "TIMG0";
+control.timerMode = "PERIODIC";
+control.timerClkPrescale = 32;
+control.timerPeriod = "10 ms";
+control.interrupts = ["ZERO"];
+const QEI = scripting.addModule("/ti/driverlib/QEI", {}, false);
+const encoder = QEI.addInstance();
+encoder.$name = "ENCODER_LEFT";
+encoder.peripheral.$assign = "TIMG8";
+encoder.peripheral.ccp0Pin.$assign = "PB6";
+encoder.peripheral.ccp1Pin.$assign = "PB7";
+const I2C = scripting.addModule("/ti/driverlib/I2C", {}, false);
+function i2c(name, hardware, scl, sda) {
+    const bus = I2C.addInstance();
+    bus.$name = name;
+    bus.basicEnableController = true;
+    bus.basicControllerBusSpeed = 400000;
+    bus.peripheral.$assign = hardware;
+    bus.peripheral.sclPin.$assign = scl;
+    bus.peripheral.sdaPin.$assign = sda;
+}
+i2c("OLED_I2C", "I2C1", "PB2", "PB3");
+i2c("IMU_I2C", "I2C0", "PA1", "PA0");
+const UART = scripting.addModule("/ti/driverlib/UART", {}, false);
+const debug = UART.addInstance();
+debug.$name = "DEBUG_UART";
+debug.targetBaudRate = 115200;
+debug.enableFIFO = true;
+debug.enableInternalLoopback = false;
+debug.peripheral.$assign = "UART0";
+debug.peripheral.txPin.$assign = "PA10";
+debug.peripheral.rxPin.$assign = "PA11";

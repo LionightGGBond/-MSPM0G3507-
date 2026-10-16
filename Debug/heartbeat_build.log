@@ -1,0 +1,12 @@
+'Arm Compiler - building file: "../empty.c"'
+'Arm Compiler - building file: "../App/robot_app.c"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"empty.d_raw" -MT"empty.o"  @"./device.opt"  -o"empty.o" "../empty.c"
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" -c @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -I"D:/CCS/Project/gpt_use" -I"D:/CCS/Project/gpt_use/Debug" -I"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include" -I"D:/CCS/mspm0_sdk_2_11_00_07/source" -g -Wall -MMD -MP -MF"App/robot_app.d_raw" -MT"App/robot_app.o"  @"./device.opt"  -o"App/robot_app.o" "../App/robot_app.c"
+'Finished building: "../empty.c"'
+' '
+'Finished building: "../App/robot_app.c"'
+' '
+'Arm Linker - building target: "gpt_use.out"'
+"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -g -Wall -Wl,-m"gpt_use.map" -Wl,-i"D:/CCS/mspm0_sdk_2_11_00_07/source" -Wl,-i"D:/CCS/Project/gpt_use" -Wl,-i"D:/CCS/Project/gpt_use/Debug/syscfg" -Wl,-i"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib" -Wl,--diag_wrap=off -Wl,--display_error_number -Wl,--warn_sections -Wl,--xml_link_info="gpt_use_linkInfo.xml" -Wl,--rom_model -o "gpt_use.out" "./empty.o" "./ti_msp_dl_config.o" "./startup_mspm0g350x_ticlang.o" "./App/robot_app.o" "./Bsp/board.o" "./Bsp/encoder.o" "./Bsp/i2c_bus.o" "./Bsp/startup.o" "./Bsp/tb6612.o" "./Devices/mpu6050.o" "./Devices/oled.o" "./Motion/controller.o" "./Motion/line_follow.o" "./Motion/pid.o" "./Motion/quadrature.o" -Wl,-l"./device_linker.cmd" -Wl,-ldevice.cmd.genlibs -Wl,-llibc.a "../robot_link_options.cmd"
+'Finished building target: "gpt_use.out"'
+' '

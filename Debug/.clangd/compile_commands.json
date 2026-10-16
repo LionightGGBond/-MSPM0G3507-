@@ -1,0 +1,77 @@
+[
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/empty.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Motion/pid.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Motion/line_follow.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Motion/quadrature.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Motion/controller.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Bsp/board.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Bsp/encoder.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Bsp/startup.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Bsp/tb6612.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Bsp/i2c_bus.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Devices/mpu6050.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Devices/oled.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/App/robot_app.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Bsp/debug_uart.c"
+   },
+   {
+      "directory" : "D:/CCS/Project/gpt_use/Debug",
+      "command"   : "clang++ -D__MSPM0G3507__ -D__USE_SYSCONFIG__ -I\"D:/CCS/Project/gpt_use\" -I\"D:/CCS/Project/gpt_use/Debug\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source/third_party/CMSIS/Core/Include\" -I\"D:/CCS/mspm0_sdk_2_11_00_07/source\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/armv7em-ti-none-eabihf/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c++/v1\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib/clang/22/include\" -isystem\"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/include/c\" -xc",
+      "file"      : "D:/CCS/Project/gpt_use/Debug/ti_msp_dl_config.c"
+   }
+]

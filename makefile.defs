@@ -1,0 +1,5 @@
+# CCS生成的makefile在读取ORDERED_OBJS后包含本文件。
+# 将用户链接选项放到生成的device_linker.cmd之后，避免默认512字节覆盖2 KB栈。
+# 不编辑Debug内自动生成的makefile，本设置在重新生成构建文件后仍保留。
+ROBOT_LINK_OPTIONS_FILE := "../robot_link_options.cmd"
+ORDERED_OBJS := $(filter-out $(ROBOT_LINK_OPTIONS_FILE),$(ORDERED_OBJS)) $(ROBOT_LINK_OPTIONS_FILE)
