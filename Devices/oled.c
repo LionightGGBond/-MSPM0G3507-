@@ -1,11 +1,23 @@
+/**
+ * @file    Devices/oled.c
+ * @brief   SSD1306 128×64：6×8 ASCII绘制、帧缓存与逐页I2C刷新。
+ * @details 顶部设置7位I2C地址；界面布局由App/robot_app.c决定，刷新节拍在empty.c。
+ */
 #include "oled.h"
 #include "../Bsp/i2c_bus.h"
-#include "../robot_config.h"
 #include "font6x8.h"
 #include <string.h>
 
+/* ======================== 本模块参数（修改后重新编译） ======================== */
+#define ROBOT_OLED_ADDRESS        0x3CU /* SSD1306的7位I2C地址，不能填左移后的0x78。 */
+
 static uint8_t s_frame[8][128];
 
+/**
+ * @brief 发送SSD1306初始化命令并清除RAM帧缓存。
+ * @retval true初始化命令全部成功；false存在I2C失败。
+ * @note 包含上电等待，仅在初始化或停车重试阶段调用。
+ */
 bool Oled_Init(void)
 {
     static const uint8_t commands[] = {
@@ -23,11 +35,21 @@ bool Oled_Init(void)
     return true;
 }
 
+/**
+ * @brief 清空1024字节RAM帧缓存。
+ * @note 不立即写屏幕，随后由主循环分时刷新。
+ */
 void Oled_Clear(void)
 {
     memset(s_frame, 0, sizeof(s_frame));
 }
 
+/**
+ * @brief 把ASCII文本绘制到RAM帧缓存。
+ * @param[in] page 页号0..7，每页8像素高。
+ * @param[in] column 字符列0..20，每字符6像素宽。
+ * @param[in] text 零结尾ASCII文本；不支持的字符显示问号。
+ */
 void Oled_Text(uint8_t page, uint8_t column, const char *text)
 {
     if (page >= 8U || column >= 21U || text == 0) return;
@@ -39,6 +61,12 @@ void Oled_Text(uint8_t page, uint8_t column, const char *text)
     }
 }
 
+/**
+ * @brief 把指定页RAM内容通过I2C发送到屏幕。
+ * @param[in] page 页号0..7。
+ * @retval true该页成功；false页号非法或I2C失败。
+ * @note 128列分包传输，单包不超过硬件FIFO容量；仅主循环调用。
+ */
 bool Oled_FlushPage(uint8_t page)
 {
     if (page >= 8U) return false;

@@ -1,8 +1,38 @@
+/**
+ * @file    Devices/mpu6050.c
+ * @brief   MPU6050寄存器读写、静止零偏标定与四元数互补滤波。
+ * @details 顶部集中设置地址、采样、标定门限和滤波参数。
+ *          主循环按公开采样周期调用Update；姿态仅显示，离线不阻止循迹。
+ */
 #include "mpu6050.h"
 #include "../Bsp/i2c_bus.h"
-#include "../robot_config.h"
 #include <math.h>
 #include <string.h>
+
+/* ======================== 本模块参数（修改后重新编译） ======================== */
+#define ROBOT_MPU_ADDRESS         0x69U /* 默认7位I2C地址，AD0低为0x68、高为0x69。 */
+#define ROBOT_IMU_AUTO_ADDRESS    1 /* 首次地址未应答后尝试另一地址，1开启。 */
+#define ROBOT_IMU_MS              10U /* 主循环采样间隔ms；改动时同步核对SMPLRT_DIV。 */
+#define ROBOT_IMU_CALIBRATION_SAMPLES 100U /* 连续静止样本数；100个×10ms约1秒。 */
+#define ROBOT_IMU_CF_KP           2.0f /* 重力方向比例校正，越大跟随越快。 */
+#define ROBOT_IMU_CF_KI           0.02f /* 残余陀螺零偏缓慢修正；0关闭在线积分。 */
+#define ROBOT_IMU_CF_I_LIMIT_DPS  3.0f /* 在线积分校正幅度上限，单位度/秒。 */
+#define ROBOT_IMU_ACCEL_MIN_G     0.85f /* 允许重力校正的加速度模长下界，单位g。 */
+#define ROBOT_IMU_ACCEL_MAX_G     1.15f /* 允许重力校正的加速度模长上界，单位g。 */
+#define ROBOT_IMU_MAX_DT_MS       50U /* 超过此积分间隔时重新建立倾角，单位ms。 */
+#define ROBOT_IMU_CAL_MAX_DPS     3.0f /* 静止标定允许的每轴角速率上限，单位度/秒。 */
+#define ROBOT_IMU_CAL_STD_DPS     0.5f /* 静止窗口允许的角速率标准差上限，单位度/秒。 */
+
+/* 主循环与界面只读此处参数，不在其他文件重复定义采样周期/标定样本数。 */
+const uint32_t g_mpu6050_sample_period_ms = ROBOT_IMU_MS;
+const uint32_t g_mpu6050_calibration_sample_count = ROBOT_IMU_CALIBRATION_SAMPLES;
+
+#if ROBOT_IMU_CALIBRATION_SAMPLES == 0U
+#error "IMU标定样本数必须大于0。"
+#endif
+#if ROBOT_IMU_MAX_DT_MS < ROBOT_IMU_MS
+#error "IMU最大积分间隔不能小于采样周期。"
+#endif
 
 /* 六轴四元数显式互补滤波：陀螺仪预测 + 重力误差PI校正。
  * 无磁力计，不能校正绝对航向；参数和使用范围见docs/IMU角度与互补滤波.md。 */
@@ -15,6 +45,12 @@ static bool s_have_time;
 #define DEG_TO_RAD 0.01745329252f
 #define RAD_TO_DEG 57.29577951f
 
+/**
+ * @brief 对滤波中间量执行上下界限幅。
+ * @param[in] value 数值。
+ * @param[in] low 下界。
+ * @param[in] high 上界。
+ */
 static float Clamp(float value, float low, float high)
 {
     if (value < low) return low;
@@ -22,6 +58,10 @@ static float Clamp(float value, float low, float high)
     return value;
 }
 
+/**
+ * @brief 清空尚未完成的连续静止标定窗口。
+ * @note 运动、读失败或方差超限时重新收集，不沿用不连续样本。
+ */
 static void ResetCalibrationWindow(void)
 {
     s_samples = 0U;
@@ -30,6 +70,12 @@ static void ResetCalibrationWindow(void)
     memset(s_sum_square, 0, sizeof(s_sum_square));
 }
 
+/**
+ * @brief 根据连续稳定样本估计陀螺三轴零偏。
+ * @param[in] gyro 原始角速率，单位度/秒。
+ * @param[in] norm2 加速度模长平方，单位g²。
+ * @param[in] stationary_wait 外部已确认处于非驱动且轮子无增量状态。
+ */
 static void UpdateCalibration(const float gyro[3], float norm2, bool stationary_wait)
 {
     if (s_data.calibrated) return;
@@ -60,6 +106,10 @@ static void UpdateCalibration(const float gyro[3], float norm2, bool stationary_
     s_data.calibrated = true;
 }
 
+/**
+ * @brief 从单位四元数计算ZYX欧拉角并写入IMU数据。
+ * @note 输出度；asin参数限幅，Yaw仅相对参考并会漂移。
+ */
 static void PublishAngles(void)
 {
     float w = s_q[0], x = s_q[1], y = s_q[2], z = s_q[3];
@@ -69,6 +119,12 @@ static void PublishAngles(void)
     s_data.yaw_deg = atan2f(2.0f * (w * z + x * y), 1.0f - 2.0f * (y * y + z * z)) * RAD_TO_DEG;
 }
 
+/**
+ * @brief 用可信重力方向重建Roll/Pitch，并保留已有相对Yaw。
+ * @param[in] ax X轴加速度g。
+ * @param[in] ay Y轴加速度g。
+ * @param[in] az Z轴加速度g。
+ */
 static void InitializeAttitude(float ax, float ay, float az)
 {
     float roll_half = 0.5f * atan2f(ay, az);
@@ -87,6 +143,15 @@ static void InitializeAttitude(float ax, float ay, float az)
     PublishAngles();
 }
 
+/**
+ * @brief 执行六轴四元数互补滤波。
+ * @param[in] ax X加速度g。
+ * @param[in] ay Y加速度g。
+ * @param[in] az Z加速度g。
+ * @param[in] norm2 加速度模长平方。
+ * @param[in] dt 实际积分间隔秒。
+ * @param[in] reinitialize 首次/长间隔恢复时重新建立倾角。
+ */
 static void UpdateAttitude(float ax, float ay, float az, float norm2,
                            float dt, bool reinitialize)
 {
@@ -145,6 +210,10 @@ static void UpdateAttitude(float ax, float ay, float az, float norm2,
     PublishAngles();
 }
 
+/**
+ * @brief 复制本次I2C结果和恢复前硬件诊断到IMU数据。
+ * @param[in] result 本次事务返回码。
+ */
 static void SaveBusResult(I2cResult result)
 {
     I2cDiagnostics diagnostics;
@@ -154,6 +223,12 @@ static void SaveBusResult(I2cResult result)
     s_data.last_i2c_status = diagnostics.status;
 }
 
+/**
+ * @brief 向当前IMU地址写一个8位寄存器。
+ * @param[in] reg 寄存器地址。
+ * @param[in] value 写入值。
+ * @retval true成功，false失败并保留总线诊断。
+ */
 static bool Write(uint8_t reg, uint8_t value)
 {
     uint8_t packet[2] = {reg, value};
@@ -162,6 +237,11 @@ static bool Write(uint8_t reg, uint8_t value)
     return result == I2C_OK;
 }
 
+/**
+ * @brief 保存初始化失败分类并累计错误次数。
+ * @param[in] fault 失败阶段。
+ * @retval false，供初始化流程直接返回。
+ */
 static bool InitializationFailed(ImuFault fault)
 {
     s_data.online = false;
@@ -170,6 +250,11 @@ static bool InitializationFailed(ImuFault fault)
     return false;
 }
 
+/**
+ * @brief 尝试读取指定7位地址的WHO_AM_I并保存探测现场。
+ * @param[in] address 默认0x68或0x69。
+ * @retval true事务成功，不表示芯片ID已经通过验证。
+ */
 static bool Probe(uint8_t address)
 {
     s_data.device_address = address;
@@ -187,6 +272,11 @@ static bool Probe(uint8_t address)
     return result == I2C_OK;
 }
 
+/**
+ * @brief 探测地址、校验芯片ID、复位并配置MPU6050。
+ * @retval true完成初始化；false失败，错误计数跨重试保留。
+ * @note 有设备复位等待，只在统一初始化或明确停车时调用。
+ */
 bool Mpu6050_Init(void)
 {
     /* 保留累计错误数；此前每次重试清零，导致初始化失败也一直显示E:0。 */
@@ -220,12 +310,25 @@ bool Mpu6050_Init(void)
     return true;
 }
 
+/**
+ * @brief 把高低字节合成为有符号16位原始值。
+ * @param[in] high 高字节。
+ * @param[in] low 低字节。
+ * @retval -32768..32767。
+ */
 static int16_t Signed16(uint8_t high, uint8_t low)
 {
     uint16_t value = (uint16_t)(((uint16_t)high << 8) | low);
     return (int16_t)(value < 32768U ? (int32_t)value : (int32_t)value - 65536);
 }
 
+/**
+ * @brief 读取六轴/温度样本，更新标定、四元数与欧拉角。
+ * @param[in] now_ms 当前真实毫秒时间。
+ * @param[in] stationary_wait 标定允许标志，运行中必须为false。
+ * @retval true本次读取成功；false失败，旧样本不可当新数据。
+ * @note 由主循环按g_mpu6050_sample_period_ms调用，不参与底盘转向。
+ */
 bool Mpu6050_Update(uint32_t now_ms, bool stationary_wait)
 {
     uint8_t raw[14];
@@ -268,11 +371,19 @@ bool Mpu6050_Update(uint32_t now_ms, bool stationary_wait)
     return true;
 }
 
+/**
+ * @brief 取得最近IMU数据和诊断的只读视图。
+ * @retval 模块静态数据指针，不释放；结合online/sample_ms判断新鲜度。
+ */
 const ImuData *Mpu6050_Data(void)
 {
     return &s_data;
 }
 
+/**
+ * @brief 取得用于OLED的ASCII故障说明。
+ * @retval 静态字符串；中文翻译由界面模块完成。
+ */
 const char *Mpu6050_FaultName(void)
 {
     if (s_data.fault != IMU_FAULT_NONE && s_data.last_bus_result == (uint8_t)I2C_TIMEOUT)

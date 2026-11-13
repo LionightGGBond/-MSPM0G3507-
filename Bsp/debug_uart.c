@@ -1,13 +1,23 @@
+/**
+ * @file    Bsp/debug_uart.c
+ * @brief   Type-C调试串口的非阻塞发送队列和字符接收。
+ * @details UART0/PA10/PA11与115200配置在SysConfig；顶部设置TX队列容量。
+ *          主循环周期性调用Poll，FIFO满立即返回；不使用UART中断。
+ */
 #include "debug_uart.h"
 #include "board.h"
 #include <string.h>
 
 #ifdef DEBUG_UART_INST
-#define TX_CAPACITY 2048U
+#define TX_CAPACITY 2048U /* 非阻塞发送队列字节数，须大于单组日志长度。 */
 static char s_tx[TX_CAPACITY];
 static uint32_t s_read, s_write, s_used, s_dropped, s_rx_errors;
 #endif
 
+/**
+ * @brief 判断SysConfig是否提供DEBUG_UART实例。
+ * @retval true已配置；false未配置，此时收发接口自动禁用。
+ */
 bool DebugUart_Enabled(void)
 {
 #ifdef DEBUG_UART_INST
@@ -17,6 +27,10 @@ bool DebugUart_Enabled(void)
 #endif
 }
 
+/**
+ * @brief 把已排队字符送入UART TX FIFO，FIFO满立即返回。
+ * @note 每次最多装32字节，仅主循环调用，无阻塞等待。
+ */
 void DebugUart_Poll(void)
 {
 #ifdef DEBUG_UART_INST
@@ -30,6 +44,11 @@ void DebugUart_Poll(void)
 #endif
 }
 
+/**
+ * @brief 从RX FIFO尝试取一个字符，错误字节置零并统计。
+ * @param[out] character 非空输出字符。
+ * @retval true消费了一个字节；false无可读数据。
+ */
 bool DebugUart_Read(char *character)
 {
 #ifdef DEBUG_UART_INST
@@ -51,6 +70,12 @@ bool DebugUart_Read(char *character)
 #endif
 }
 
+/**
+ * @brief 尝试把一整条文本加入非阻塞TX队列。
+ * @param[in] text 以零结尾的UTF-8/ASCII文本。
+ * @retval true已入队；false队列不足或UART未配置。
+ * @note 空间不足整条丢弃，不把半个UTF-8字符放入队列。
+ */
 bool DebugUart_Write(const char *text)
 {
 #ifdef DEBUG_UART_INST
@@ -71,6 +96,10 @@ bool DebugUart_Write(const char *text)
 #endif
 }
 
+/**
+ * @brief 读取发送队列空间不足导致的累计整条丢弃次数。
+ * @retval 发送丢弃计数。
+ */
 uint32_t DebugUart_Dropped(void)
 {
 #ifdef DEBUG_UART_INST
@@ -80,6 +109,10 @@ uint32_t DebugUart_Dropped(void)
 #endif
 }
 
+/**
+ * @brief 读取UART帧错误、奇偶、BREAK或溢出的累计计数。
+ * @retval 接收错误计数。
+ */
 uint32_t DebugUart_RxErrors(void)
 {
 #ifdef DEBUG_UART_INST

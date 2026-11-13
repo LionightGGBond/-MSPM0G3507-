@@ -18,7 +18,9 @@ def main():
     parser.add_argument("--compiler", type=Path, default=Path("D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS"))
     parser.add_argument("--sysconfig", type=Path, default=Path("D:/CCS/sysconfig_1.26.2"))
     parser.add_argument("--output", type=Path, required=True, help="使用工程目录以外的独立输出目录")
-    parser.add_argument("--line-mode", action="store_true", help="完整编译原循迹模式")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--line-mode", action="store_true", help="强制完整编译循迹模式")
+    mode.add_argument("--test-mode", action="store_true", help="强制完整编译电机转停测试模式")
     parser.add_argument("--without-uart", action="store_true", help="验证尚未添加调试UART的配置")
     args = parser.parse_args()
     out = args.output.resolve()
@@ -41,6 +43,8 @@ def main():
              "-I" + str(args.sdk / "source/third_party/CMSIS/Core/Include")]
     if args.line_mode:
         flags.append("-DROBOT_MOTOR_TEST_MODE=0")
+    elif args.test_mode:
+        flags.append("-DROBOT_MOTOR_TEST_MODE=1")
     sources = [ROOT / "empty.c"]
     for folder in ["Motion", "Bsp", "Devices", "App"]:
         sources.extend(sorted((ROOT / folder).glob("*.c")))

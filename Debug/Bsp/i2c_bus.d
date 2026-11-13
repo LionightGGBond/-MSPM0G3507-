@@ -83,8 +83,7 @@ Bsp/i2c_bus.o: ../Bsp/i2c_bus.c ../Bsp/i2c_bus.h ../Bsp/board.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_vref.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h \
- D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h \
- ../robot_config.h
+ D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h
 ../Bsp/i2c_bus.h:
 ../Bsp/board.h:
 ti_msp_dl_config.h:
@@ -170,4 +169,3 @@ D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_vref.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h:
-../robot_config.h:

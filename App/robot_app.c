@@ -1,3 +1,9 @@
+/**
+ * @file    App/robot_app.c
+ * @brief   界面与诊断输出：绘制OLED帧缓存、格式化中文串口日志。
+ * @details 本文件不初始化硬件、不调度任务、不运行PID，也不注册控制中断。
+ *          empty.c定时调用RobotApp_Render/Report；这里只消费只读快照。
+ */
 #include "robot_app.h"
 #include "../Bsp/board.h"
 #include "../Bsp/tb6612.h"
@@ -9,95 +15,18 @@
 #include <math.h>
 #include <stdio.h>
 
-static Controller s_control;
-static EncoderSample s_encoder;
-static volatile uint32_t s_main_alive_ms;
-static bool s_oled_ready, s_imu_ready;
-static uint32_t s_last_imu, s_last_display, s_start_ms, s_retry_ms;
-static uint8_t s_page = 8U;
-static uint32_t s_heartbeat_seconds, s_heartbeat_epoch_ms;
-static bool s_heartbeat_led_on;
-static volatile uint32_t s_control_irq_count, s_control_dt_ms;
-static BoardTimerDiagnostics s_timer_diagnostics;
-static uint32_t s_last_report;
-static bool s_report_requested;
+/* ======================== 显示/日志格式化参数 ======================== */
+#define DISPLAY_TEXT_BYTES 32U   /* 单条OLED ASCII文本缓冲，含结束符。 */
+#define SERIAL_TEXT_BYTES  448U  /* 一行UTF-8诊断缓冲，须小于串口TX队列。 */
 
-static void UpdateHeartbeat(uint32_t now_ms)
-{
-    /* 与控制ISR解耦：故障停车时主循环仍能计数。延迟时按经过的整秒补计，
-     * 不用now直接除1000，避免毫秒计数回绕时心跳数字突然归零。 */
-    uint32_t elapsed = now_ms - s_heartbeat_epoch_ms;
-    uint32_t whole_seconds = elapsed / 1000U;
-    s_heartbeat_seconds += whole_seconds;
-    s_heartbeat_epoch_ms += whole_seconds * 1000U;
-    /* 同一时间基准：亮500ms、灭500ms；每次进入亮相位时数字加一。 */
-    s_heartbeat_led_on = (uint32_t)(now_ms - s_heartbeat_epoch_ms) < 500U;
-}
-
-void RobotApp_Snapshot(RobotSnapshot *snapshot)
-{
-    /* 不将 volatile 当作互斥锁；快照期间禁止中断，尤其保证64位位置一致。 */
-    uint32_t saved = Board_Lock();
-    snapshot->state = s_control.state;
-    snapshot->line_fallback = s_control.line_fallback;
-    snapshot->left_target = s_control.left_target;
-    snapshot->right_target = s_control.right_target;
-    snapshot->left_speed = s_control.left_speed;
-    snapshot->right_speed = s_control.right_speed;
-    snapshot->left_pwm = s_control.left_pwm;
-    snapshot->right_pwm = s_control.right_pwm;
-    snapshot->encoder = s_encoder;
-    TB6612_ReadInputLevels(&snapshot->motor_inputs);
-    snapshot->now_ms = Board_Millis();
-    snapshot->heartbeat_seconds = s_heartbeat_seconds;
-    snapshot->heartbeat_led_on = s_heartbeat_led_on;
-    snapshot->control_irq_count = s_control_irq_count;
-    snapshot->control_dt_ms = s_control_dt_ms;
-    Board_Unlock(saved);
-    /* 配置错误时控制ISR尚未启动，显示仍需反映真实五路GPIO，不能一直显示初值0。 */
-    snapshot->line_bits = Board_LineBits();
-}
-
-void RobotApp_Init(bool oled_ready, bool imu_ready)
-{
-    s_oled_ready = oled_ready;
-    s_imu_ready = imu_ready;
-    s_main_alive_ms = s_start_ms = Board_Millis();
-    s_last_imu = s_last_display = s_retry_ms = s_start_ms;
-    s_heartbeat_epoch_ms = s_start_ms;
-    s_heartbeat_seconds = 0U;
-    s_heartbeat_led_on = true;
-    s_last_report = s_start_ms;
-    s_report_requested = true;
-    (void)DebugUart_Write("\r\n小车串口诊断：115200，8N1，接收编码UTF-8\r\n"
-        "?：状态/帮助；s：暂停测试；r：继续测试；i：暂停后重新初始化IMU\r\n");
-    s_control_irq_count = s_control_dt_ms = 0U;
-    Controller_Init(&s_control, s_start_ms);
-    Board_ReadTimerDiagnostics(&s_timer_diagnostics);
-    if (s_timer_diagnostics.errors != 0U) {
-        s_control.state = ROBOT_TIMING_ERROR;
-        TB6612_Brake();
-        return;
-    }
-    DL_TimerG_clearInterruptStatus(CONTROL_TIMER_INST, DL_TIMERG_INTERRUPT_ZERO_EVENT);
-    NVIC_ClearPendingIRQ(CONTROL_TIMER_INST_INT_IRQN);
-    NVIC_EnableIRQ(CONTROL_TIMER_INST_INT_IRQN);
-    DL_TimerG_startCounter(CONTROL_TIMER_INST);
-}
-
-void CONTROL_TIMER_INST_IRQHandler(void)
-{
-    if (DL_TimerG_getPendingInterrupt(CONTROL_TIMER_INST) == DL_TIMERG_IIDX_ZERO) {
-        Encoder_Sample(&s_encoder);
-        uint32_t now_ms = Board_Millis();
-        ++s_control_irq_count;
-        s_control_dt_ms = now_ms - s_control.last_step_ms;
-        Controller_Step(&s_control, now_ms, s_main_alive_ms, Board_LineBits(),
-                         s_encoder.left_delta, s_encoder.right_delta);
-        TB6612_Set(s_control.left_pwm, s_control.right_pwm);
-    }
-}
-
+/**
+ * @brief 将有效角度格式化为带符号一位小数的ASCII文本。
+ * @param[out] text 输出缓冲。
+ * @param[in] size 缓冲字节数。
+ * @param[in] label ASCII标签。
+ * @param[in] angle 角度，单位度。
+ * @param[in] valid 无效时显示占位符，不显示旧值为新值。
+ */
 static void FormatAngle(char *text, size_t size, const char *label, float angle, bool valid)
 {
     if (!valid || !isfinite(angle)) {
@@ -110,15 +39,20 @@ static void FormatAngle(char *text, size_t size, const char *label, float angle,
     (void)snprintf(text, size, "%s:%c%3u.%u deg", label, sign, tenths / 10U, tenths % 10U);
 }
 
-static void Render(const RobotSnapshot *s)
+/**
+ * @brief 根据主循环快照绘制当前OLED帧缓存。
+ * @param[in] s 一致性只读快照。
+ * @note 不发送I2C；empty.c随后逐页刷新，布局在此修改。
+ */
+void RobotApp_Render(const RobotSnapshot *s)
 {
-    char text[32];
+    char text[DISPLAY_TEXT_BYTES];
     const ImuData *imu = Mpu6050_Data();
     Oled_Clear();
     const char *state_name = Controller_StateName(s->state);
-    if (s_timer_diagnostics.errors != 0U) {
+    if (s->timer_diagnostics.errors != 0U) {
         uint32_t pwm_errors = BOARD_TIMER_PWM_CLOCK_ERROR | BOARD_TIMER_PWM_LOAD_ERROR;
-        state_name = (s_timer_diagnostics.errors & pwm_errors) != 0U ? "PWM CONFIG" : "CTRL CONFIG";
+        state_name = (s->timer_diagnostics.errors & pwm_errors) != 0U ? "PWM CONFIG" : "CTRL CONFIG";
     } else if (s->state == ROBOT_LINE_AMBIGUOUS) {
         state_name = "CROSS/INV";
     } else if (s->state == ROBOT_MAIN_TIMEOUT) {
@@ -129,14 +63,14 @@ static void Render(const RobotSnapshot *s)
     (void)snprintf(text, sizeof(text), "H:%06lu%c",
         (unsigned long)(s->heartbeat_seconds % 1000000U), s->heartbeat_led_on ? '*' : ' ');
     Oled_Text(0U, 12U, text);
-    bool valid = s_imu_ready && imu->online && imu->attitude_valid;
+    bool valid = s->imu_ready && imu->online && imu->attitude_valid;
     FormatAngle(text, sizeof(text), "PITCH", imu->pitch_deg, valid);
     Oled_Text(1U, 0U, text);
     FormatAngle(text, sizeof(text), "ROLL ", imu->roll_deg, valid);
     Oled_Text(2U, 0U, text);
     FormatAngle(text, sizeof(text), "YAW  ", imu->yaw_deg, valid && imu->calibrated);
     Oled_Text(3U, 0U, text);
-    if (!s_imu_ready || !imu->online) {
+    if (!s->imu_ready || !imu->online) {
         if (imu->fault == IMU_FAULT_ID) {
             (void)snprintf(text, sizeof(text), "IMU:%02X BAD ID:%02X", (unsigned)imu->device_address,
                            (unsigned)imu->who_am_i);
@@ -146,7 +80,7 @@ static void Render(const RobotSnapshot *s)
         }
     } else if (!imu->calibrated) {
         (void)snprintf(text, sizeof(text), "CAL:%lu/%u HOLD STILL", (unsigned long)imu->calibration_samples,
-                       (unsigned)ROBOT_IMU_CALIBRATION_SAMPLES);
+                       (unsigned)g_mpu6050_calibration_sample_count);
     } else if (!imu->attitude_valid) {
         (void)snprintf(text, sizeof(text), "IMU:WAIT GRAVITY");
     } else {
@@ -165,8 +99,8 @@ static void Render(const RobotSnapshot *s)
     }
     /* 使用整数格式，避免引入 printf 浮点格式化带来的栈与 Flash 开销。 */
     if (s->state == ROBOT_TIMING_ERROR) {
-        (void)snprintf(text, sizeof(text), "PWM:%lu CT:%lu", (unsigned long)s_timer_diagnostics.pwm_load,
-                       (unsigned long)s_timer_diagnostics.control_load);
+        (void)snprintf(text, sizeof(text), "PWM:%lu CT:%lu", (unsigned long)s->timer_diagnostics.pwm_load,
+                       (unsigned long)s->timer_diagnostics.control_load);
         Oled_Text(6U, 0U, text);
         (void)snprintf(text, sizeof(text), "IRQ:%lu DT:%lums", (unsigned long)s->control_irq_count,
                        (unsigned long)s->control_dt_ms);
@@ -186,56 +120,18 @@ static void Render(const RobotSnapshot *s)
     Oled_Text(7U, 0U, text);
 }
 
-static bool MotorsDriven(RobotState state)
-{
-    return state == ROBOT_RUNNING || state == ROBOT_TEST_RUNNING;
-}
-
-static void SerialCommands(void)
-{
-    char character;
-    for (unsigned int n = 0U; n < 16U && DebugUart_Read(&character); ++n) {
-        if (character == '?' || character == 'h') {
-            s_report_requested = true;
-            (void)DebugUart_Write("?：状态/帮助；s：暂停测试；r：继续测试；i：暂停或故障停车后重新初始化IMU\r\n");
-        } else if (character == 's' || character == 'r') {
-#if ROBOT_MOTOR_TEST_MODE
-            uint32_t saved = Board_Lock();
-            s_control.test_pause_requested = character == 's';
-            Board_Unlock(saved);
-            (void)DebugUart_Write(character == 's' ? "已请求暂停：下一次10ms控制中断刹车\r\n" :
-                "已请求继续测试：故障锁存仍需修正后复位\r\n");
-#else
-            (void)DebugUart_Write("s/r命令仅在电机测试模式下有效\r\n");
-#endif
-            s_report_requested = true;
-        } else if (character == 'i') {
-            RobotSnapshot snapshot;
-            RobotApp_Snapshot(&snapshot);
-            /* 自动2秒停车很快会再次起转；手动重置IMU必须先暂停或已锁存停车。 */
-            if (snapshot.state == ROBOT_TEST_PAUSED || snapshot.state == ROBOT_FINISHED ||
-                snapshot.state >= ROBOT_LINE_LOST) {
-                s_main_alive_ms = Board_Millis();
-                s_imu_ready = Mpu6050_Init();
-                s_main_alive_ms = Board_Millis();
-                (void)DebugUart_Write(s_imu_ready ? "IMU初始化成功，请保持静止完成零偏标定\r\n" :
-                                                       "IMU初始化失败，请查看后续IMU诊断\r\n");
-            } else {
-                (void)DebugUart_Write("当前不能重置IMU：先发s，确认状态为测试暂停，再发i\r\n");
-            }
-            s_report_requested = true;
-        }
-    }
-}
-
 /* 中文名称只用于串口，OLED继续使用现有ASCII字库。源码和串口文本均为UTF-8。 */
-static const char *SerialStateName(RobotState state)
+/**
+ * @brief 把快照中的状态和配置故障翻译成中文。
+ * @param[in] s 包含定时器诊断的只读快照。
+ */
+static const char *SerialStateName(const RobotSnapshot *s)
 {
-    if (s_timer_diagnostics.errors != 0U) {
+    if (s->timer_diagnostics.errors != 0U) {
         uint32_t pwm_errors = BOARD_TIMER_PWM_CLOCK_ERROR | BOARD_TIMER_PWM_LOAD_ERROR;
-        return (s_timer_diagnostics.errors & pwm_errors) != 0U ? "PWM配置错误" : "控制定时器配置错误";
+        return (s->timer_diagnostics.errors & pwm_errors) != 0U ? "PWM配置错误" : "控制定时器配置错误";
     }
-    switch (state) {
+    switch (s->state) {
         case ROBOT_WAIT: return "启动等待";
         case ROBOT_RUNNING: return "循迹运行";
         case ROBOT_FINISHED: return "运行结束";
@@ -251,6 +147,10 @@ static const char *SerialStateName(RobotState state)
     }
 }
 
+/**
+ * @brief 把IMU最近故障翻译成中文，超时优先显示。
+ * @param[in] imu 只读设备数据。
+ */
 static const char *SerialImuFaultName(const ImuData *imu)
 {
     if (imu->fault != IMU_FAULT_NONE && imu->last_bus_result == (uint8_t)I2C_TIMEOUT)
@@ -266,6 +166,10 @@ static const char *SerialImuFaultName(const ImuData *imu)
     }
 }
 
+/**
+ * @brief 把I2C结果码翻译成中文。
+ * @param[in] result I2cResult数值。
+ */
 static const char *SerialBusName(uint8_t result)
 {
     switch ((I2cResult)result) {
@@ -277,6 +181,10 @@ static const char *SerialBusName(uint8_t result)
     }
 }
 
+/**
+ * @brief 把I2C事务阶段翻译成中文。
+ * @param[in] stage I2cStage数值。
+ */
 static const char *SerialI2cStageName(uint8_t stage)
 {
     switch ((I2cStage)stage) {
@@ -288,19 +196,24 @@ static const char *SerialI2cStageName(uint8_t stage)
     }
 }
 
-static void SerialReport(const RobotSnapshot *s)
+/**
+ * @brief 输出底盘、IMU和探测诊断到非阻塞串口队列。
+ * @param[in] s 一致性只读快照。
+ * @note 只格式化数据，不更改控制状态；输出周期在empty.c顶部修改。
+ */
+void RobotApp_Report(const RobotSnapshot *s)
 {
     /* 中文UTF-8每个汉字通常占3字节，分行保持单行缓冲和2KB发送队列余量。
      * 每行独立入队，队列满时整行丢弃并累计；不使用阻塞printf发送。 */
-    char text[448];
+    char text[SERIAL_TEXT_BYTES];
     const ImuData *imu = Mpu6050_Data();
     (void)snprintf(text, sizeof(text),
         "系统 时间=%lums 模式=%s 状态=%s 心跳=%lu 配置错误位=0x%lX "
         "PWM装载值=%lu 控制定时器装载值=%lu 中断次数=%lu 控制间隔=%lums\r\n",
         (unsigned long)s->now_ms, ROBOT_MOTOR_TEST_MODE ? "电机测试" : "循迹",
-        SerialStateName(s->state), (unsigned long)s->heartbeat_seconds,
-        (unsigned long)s_timer_diagnostics.errors, (unsigned long)s_timer_diagnostics.pwm_load,
-        (unsigned long)s_timer_diagnostics.control_load, (unsigned long)s->control_irq_count,
+        SerialStateName(s), (unsigned long)s->heartbeat_seconds,
+        (unsigned long)s->timer_diagnostics.errors, (unsigned long)s->timer_diagnostics.pwm_load,
+        (unsigned long)s->timer_diagnostics.control_load, (unsigned long)s->control_irq_count,
         (unsigned long)s->control_dt_ms);
     (void)DebugUart_Write(text);
     (void)snprintf(text, sizeof(text),
@@ -319,7 +232,7 @@ static void SerialReport(const RobotSnapshot *s)
         (unsigned)imu->device_address, (unsigned)imu->who_am_i, imu->online ? "是" : "否",
         SerialImuFaultName(imu), SerialBusName(imu->last_bus_result),
         (unsigned)imu->last_bus_result, (unsigned long)imu->errors,
-        (unsigned long)imu->calibration_samples, (unsigned)ROBOT_IMU_CALIBRATION_SAMPLES,
+        (unsigned long)imu->calibration_samples, (unsigned)g_mpu6050_calibration_sample_count,
         imu->calibrated ? "是" : "否", imu->attitude_valid ? "是" : "否",
         (unsigned long)imu->sample_ms,
         /* 引脚已复用为I2C，读MBMON总线监视值，不用普通GPIO的DIN推断。 */
@@ -349,56 +262,4 @@ static void SerialReport(const RobotSnapshot *s)
         (int)imu->gyro_raw[0], (int)imu->gyro_raw[1], (int)imu->gyro_raw[2], (int)imu->temperature_raw,
         (long)(imu->pitch_deg * 10.0f), (long)(imu->roll_deg * 10.0f), (long)(imu->yaw_deg * 10.0f));
     (void)DebugUart_Write(text);
-}
-
-void RobotApp_Poll(void)
-{
-    uint32_t now = Board_Millis();
-    s_main_alive_ms = now;
-    DebugUart_Poll();
-    SerialCommands();
-    now = Board_Millis();
-    s_main_alive_ms = now;
-    UpdateHeartbeat(now);
-    RobotSnapshot snapshot;
-    RobotApp_Snapshot(&snapshot);
-    bool fault = snapshot.state >= ROBOT_LINE_LOST;
-    Board_Leds(snapshot.heartbeat_led_on,
-        (snapshot.line_bits & 1U) != 0U, (snapshot.line_bits & 16U) != 0U);
-    Board_Buzzer((uint32_t)(now - s_start_ms) < 100U || (fault && now % 600U < 100U));
-    if (s_imu_ready && (uint32_t)(now - s_last_imu) >= ROBOT_IMU_MS) {
-        s_last_imu = now;
-        bool stationary_stop = !MotorsDriven(snapshot.state) &&
-                               snapshot.encoder.left_delta == 0 && snapshot.encoder.right_delta == 0;
-        (void)Mpu6050_Update(now, stationary_stop);
-    }
-    /* 设备缺失不影响底盘固定周期。只有停车时尝试重新初始化缺失设备。 */
-    bool retry_allowed = !MotorsDriven(snapshot.state) && snapshot.state != ROBOT_TEST_STOPPED;
-    if (retry_allowed && (uint32_t)(now - s_retry_ms) >= 1000U) {
-        s_retry_ms = now;
-        if (!s_oled_ready) {
-            s_main_alive_ms = Board_Millis();
-            s_oled_ready = Oled_Init();
-            s_page = 8U;
-        }
-        if (!s_imu_ready) {
-            s_main_alive_ms = Board_Millis();
-            s_imu_ready = Mpu6050_Init();
-        }
-    }
-    if (DebugUart_Enabled() && (s_report_requested ||
-        (uint32_t)(now - s_last_report) >= ROBOT_DEBUG_REPORT_MS)) {
-        s_report_requested = false;
-        s_last_report = now;
-        SerialReport(&snapshot);
-    }
-    if (s_oled_ready && s_page >= 8U && (uint32_t)(now - s_last_display) >= ROBOT_DISPLAY_MS) {
-        s_last_display = now;
-        Render(&snapshot);
-        s_page = 0U;
-    }
-    if (s_oled_ready && s_page < 8U) {
-        if (Oled_FlushPage(s_page)) ++s_page;
-        else { s_oled_ready = false; s_page = 8U; }
-    }
 }

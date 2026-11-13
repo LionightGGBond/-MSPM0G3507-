@@ -2,7 +2,7 @@
 
 App/robot_app.o: ../App/robot_app.c ../App/robot_app.h \
  ../Motion/controller.h ../Motion/pid.h \
- ../Bsp/encoder.h ../Bsp/tb6612.h ../Bsp/board.h \
+ ../Bsp/encoder.h ../Bsp/board.h \
  ti_msp_dl_config.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/msp.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/DeviceFamily.h \
@@ -86,14 +86,13 @@ App/robot_app.o: ../App/robot_app.c ../App/robot_app.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h \
- ../Bsp/debug_uart.h ../Bsp/i2c_bus.h \
- ../Devices/oled.h ../Devices/mpu6050.h \
- ../robot_config.h
+ ../Bsp/tb6612.h ../Bsp/debug_uart.h \
+ ../Bsp/i2c_bus.h ../Devices/oled.h \
+ ../Devices/mpu6050.h ../robot_config.h
 ../App/robot_app.h:
 ../Motion/controller.h:
 ../Motion/pid.h:
 ../Bsp/encoder.h:
-../Bsp/tb6612.h:
 ../Bsp/board.h:
 ti_msp_dl_config.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/msp.h:
@@ -178,6 +177,7 @@ D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_vref.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h:
+../Bsp/tb6612.h:
 ../Bsp/debug_uart.h:
 ../Bsp/i2c_bus.h:
 ../Devices/oled.h:

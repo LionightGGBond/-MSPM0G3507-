@@ -1,6 +1,6 @@
 # FIXED
 
-empty.o: ../empty.c ../Bsp/board.h \
+empty.o: ../empty.c ../robot_config.h ../Bsp/board.h \
  ti_msp_dl_config.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/msp.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/DeviceFamily.h \
@@ -84,9 +84,11 @@ empty.o: ../empty.c ../Bsp/board.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h \
- ../Bsp/tb6612.h ../Bsp/encoder.h ../Devices/oled.h \
+ ../Bsp/tb6612.h ../Bsp/encoder.h ../Bsp/debug_uart.h ../Devices/oled.h \
  ../Devices/mpu6050.h ../App/robot_app.h ../Motion/controller.h \
- ../Motion/pid.h ../Bsp/encoder.h ../Bsp/tb6612.h
+ ../Motion/pid.h ../Bsp/encoder.h ../Bsp/board.h \
+ ../Bsp/tb6612.h
+../robot_config.h:
 ../Bsp/board.h:
 ti_msp_dl_config.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/devices/msp/msp.h:
@@ -173,10 +175,12 @@ D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h:
 ../Bsp/tb6612.h:
 ../Bsp/encoder.h:
+../Bsp/debug_uart.h:
 ../Devices/oled.h:
 ../Devices/mpu6050.h:
 ../App/robot_app.h:
 ../Motion/controller.h:
 ../Motion/pid.h:
 ../Bsp/encoder.h:
+../Bsp/board.h:
 ../Bsp/tb6612.h:

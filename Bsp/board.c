@@ -1,8 +1,22 @@
+/**
+ * @file    Bsp/board.c
+ * @brief   板级时钟、SysTick、GPIO、定时器核对及临界区。
+ * @details Board_Init调用SysConfig初始化并建立1ms时基。
+ *          顶部配置LED、蜂鸣器有效电平和循迹黑线电平；引脚仍在SysConfig配置。
+ */
 #include "board.h"
-#include "../robot_config.h"
+
+/* ======================== 本模块参数（修改后重新编译） ======================== */
+#define ROBOT_LED_ACTIVE_LEVEL    1U /* LED高电平亮=1，低电平亮=0。 */
+#define ROBOT_BUZZER_ACTIVE_LEVEL 1U /* 有源蜂鸣器高电平响=1。 */
+#define ROBOT_LINE_ACTIVE_LEVEL   1U /* 黑线时DO高=1，DO低=0；统一转成黑线位图。 */
 
 static volatile uint32_t s_milliseconds;
 
+/**
+ * @brief 保存当前PRIMASK并暂时关闭可屏蔽中断。
+ * @retval 原中断屏蔽值，必须传回Board_Unlock。
+ */
 uint32_t Board_Lock(void)
 {
     uint32_t saved = __get_PRIMASK();
@@ -10,17 +24,34 @@ uint32_t Board_Lock(void)
     return saved;
 }
 
+/**
+ * @brief 恢复进入临界区之前的中断屏蔽状态。
+ * @param[in] saved 对应Board_Lock返回值。
+ */
 void Board_Unlock(uint32_t saved)
 {
     __set_PRIMASK(saved);
 }
 
+/**
+ * @brief 按逻辑高低写入一个GPIO输出。
+ * @param[in] port 端口寄存器。
+ * @param[in] pin 引脚掩码。
+ * @param[in] high true输出高，false输出低。
+ */
 static void Output(GPIO_Regs *port, uint32_t pin, bool high)
 {
     if (high) DL_GPIO_setPins(port, pin);
     else DL_GPIO_clearPins(port, pin);
 }
 
+/**
+ * @brief 更新心跳、左侧和右侧LED的逻辑亮灭状态。
+ * @param[in] heart 心跳灯是否亮。
+ * @param[in] left 左灯是否亮。
+ * @param[in] right 右灯是否亮。
+ * @note 自动按本文件顶部的有效电平转换。
+ */
 void Board_Leds(bool heart, bool left, bool right)
 {
     Output(GPIO_LED_HEART_PORT, GPIO_LED_HEART_PIN, heart == (ROBOT_LED_ACTIVE_LEVEL != 0U));
@@ -28,11 +59,19 @@ void Board_Leds(bool heart, bool left, bool right)
     Output(GPIO_LED_RIGHT_PORT, GPIO_LED_RIGHT_PIN, right == (ROBOT_LED_ACTIVE_LEVEL != 0U));
 }
 
+/**
+ * @brief 控制有源蜂鸣器的逻辑开关。
+ * @param[in] on true响，false关闭。
+ */
 void Board_Buzzer(bool on)
 {
     Output(GPIO_BUZZER_PORT, GPIO_BUZZER_OUT_PIN, on == (ROBOT_BUZZER_ACTIVE_LEVEL != 0U));
 }
 
+/**
+ * @brief 调用SysConfig初始化，建立1ms时基并设置中断优先级。
+ * @note 在empty.c的System_Init第一步调用；不在此启动10ms底盘控制定时器。
+ */
 void Board_Init(void)
 {
     SYSCFG_DL_init();
@@ -49,6 +88,10 @@ void Board_Init(void)
     NVIC_SetPriority(SysTick_IRQn, 1U);
 }
 
+/**
+ * @brief 检查PWM与控制定时器的实际时钟和LOAD是否符合约定。
+ * @retval true全部匹配；false存在配置错误。
+ */
 bool Board_ValidateTimers(void)
 {
     BoardTimerDiagnostics diagnostics;
@@ -56,6 +99,11 @@ bool Board_ValidateTimers(void)
     return diagnostics.errors == 0U;
 }
 
+/**
+ * @brief 读取定时器实际参数并生成错误位。
+ * @param[out] diagnostics 检查结果及两个LOAD；非空。
+ * @note 对照SysConfig清单核对PWM LOAD=1599、控制LOAD=9999。
+ */
 void Board_ReadTimerDiagnostics(BoardTimerDiagnostics *diagnostics)
 {
     DL_TimerG_ClockConfig pwm_clock, control_clock;
@@ -76,22 +124,39 @@ void Board_ReadTimerDiagnostics(BoardTimerDiagnostics *diagnostics)
     if (diagnostics->control_load != 9999U) diagnostics->errors |= BOARD_TIMER_CTRL_LOAD_ERROR;
 }
 
+/**
+ * @brief 1ms系统节拍中断，仅递增毫秒计数。
+ * @note 不在该中断中执行传感器读取、PID或显示。
+ */
 void SysTick_Handler(void)
 {
     ++s_milliseconds;
 }
 
+/**
+ * @brief 读取当前毫秒计数。
+ * @retval uint32毫秒时间，约49.7天回绕；时间差须无符号相减。
+ */
 uint32_t Board_Millis(void)
 {
     return s_milliseconds;
 }
 
+/**
+ * @brief 忙等指定毫秒数，供设备复位等初始化阶段使用。
+ * @param[in] duration 等待时间ms。
+ * @note 依赖SysTick可执行，禁止在控制IRQ或关中断期间调用。
+ */
 void Board_DelayMs(uint32_t duration)
 {
     uint32_t start = Board_Millis();
     while ((uint32_t)(Board_Millis() - start) < duration) { __NOP(); }
 }
 
+/**
+ * @brief 同一端口一次采样五路循迹GPIO并归一化黑线电平。
+ * @retval bit0..4依次为最左到最右，黑线为1。
+ */
 uint8_t Board_LineBits(void)
 {
     static const uint32_t pins[5] = {GPIO_LINE_L2_PIN, GPIO_LINE_L1_PIN,

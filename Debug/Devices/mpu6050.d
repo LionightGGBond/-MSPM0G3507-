@@ -84,8 +84,7 @@ Devices/mpu6050.o: ../Devices/mpu6050.c ../Devices/mpu6050.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_vref.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h \
  D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h \
- D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h \
- ../robot_config.h
+ D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h
 ../Devices/mpu6050.h:
 ../Bsp/i2c_bus.h:
 ../Bsp/board.h:
@@ -172,4 +171,3 @@ D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_vref.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h:
 D:/CCS/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h:
-../robot_config.h:

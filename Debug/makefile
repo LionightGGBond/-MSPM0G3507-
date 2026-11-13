@@ -151,7 +151,7 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Tool invocations
 gpt_use.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Arm Linker - building target: "$@"'
-	"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -g -Wall -Wl,-m"gpt_use.map" -Wl,-i"D:/CCS/mspm0_sdk_2_11_00_07/source" -Wl,-i"D:/CCS/Project/gpt_use" -Wl,-i"D:/CCS/Project/gpt_use/Debug/syscfg" -Wl,-i"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib" -Wl,--diag_wrap=off -Wl,--display_error_number -Wl,--warn_sections -Wl,--xml_link_info="gpt_use_linkInfo.xml" -Wl,--rom_model -o "gpt_use.out" $(ORDERED_OBJS)
+	"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/bin/tiarmclang.exe" @"device.opt"  -march=thumbv6m -mcpu=cortex-m0plus -mfloat-abi=soft -mlittle-endian -mthumb -O2 -g -Wall -Wl,-m"gpt_use.map" -Wl,-i"D:/CCS/mspm0_sdk_2_11_00_07/source" -Wl,-i"D:/CCS/CCS_Project/gpt_use" -Wl,-i"D:/CCS/CCS_Project/gpt_use/Debug/syscfg" -Wl,-i"D:/CCS/ccs/tools/compiler/ti-cgt-armllvm_5.1.1.LTS/lib" -Wl,--diag_wrap=off -Wl,--display_error_number -Wl,--warn_sections -Wl,--xml_link_info="gpt_use_linkInfo.xml" -Wl,--rom_model -o "gpt_use.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 

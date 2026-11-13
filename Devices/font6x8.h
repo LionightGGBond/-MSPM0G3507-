@@ -1,3 +1,8 @@
+/**
+ * @file    Devices/font6x8.h
+ * @brief   OLED复用的6×8 ASCII字模数据。
+ * @details 仅保存显示数据；不要在本文件放入任务调度或电机参数。
+ */
 /* 复用原 M0use 工程 ASCII 字库。每字取前六列，字节最低位为上方像素。 */
 static const uint8_t FONT_6X8[95][8] = {
     {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}, /* ' ' */

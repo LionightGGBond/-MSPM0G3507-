@@ -54,7 +54,7 @@ MCU与外设共地。逻辑VCC和信号按已确认的3.3V设计；TB6612 VM按�
 | `GPIO_BUZZER` | `OUT` | PA21 | Cleared / Low |
 
 电机IN初始11为短路制动。混合端口组会为每个引脚生成 `_PORT` 宏；不要把组拆成不同名字。
-若外接LED模块是低有效，改 `ROBOT_LED_ACTIVE_LEVEL=0`，并将LED初值改High。
+若外接LED模块是低有效，改 `Bsp/board.c` 顶部的 `ROBOT_LED_ACTIVE_LEVEL=0`，并将LED初值改High。
 
 ## 4. GPIO输入：两个组
 
@@ -151,7 +151,7 @@ Add PWM，实例名必须为 `MOTOR_PWM`。
 
 在Basic Configuration→Clock Configuration中设置时钟；Desired Timer Period填 `10 ms` 或 `0.01 s`，不能只填无单位的10（会被解析为10秒）。Calculated Timer Clock/Timer Clock Frequency应为1000000 Hz，Actual Timer Period应为10ms。LOAD=9999是生成结果，不是PWM Period Count，也不需要手工寻找输入框。
 
-不要分配外部CCP脚。生成的 `CONTROL_TIMER_INST_IRQHandler` 展开为 `TIMG0_IRQHandler`。
+不要分配外部CCP脚。`empty.c` 中的 `CONTROL_TIMER_INST_IRQHandler` 通过生成的宏展开为 `TIMG0_IRQHandler`。
 ISR执行：编码器采样→循迹状态与目标→PID→电机输出。
 
 ## 8. 两条I2C
@@ -175,7 +175,7 @@ Add I2C两次，均启用Controller，不用Target模式。
 `Enable Target Mode` 不勾选。总线频率在I2C Controller Basic Configuration的 `Custom Bus Speed (Hz)` 填400000；若显示 `Standard Bus Speed` 下拉框，则选 `Fast Mode (400kHz)`。
 滤波项在Advanced Configuration中，保持默认；其中FIFO Trigger Level是触发阈值，不是FIFO容量，不要因为深度8就全部改成8。
 Interrupt Configuration里的Controller/Target/Timeout Interrupts均不选；DMA Configuration里的Enable DMA Event 1/2 Trigger不勾选。
-软件器件地址在 `robot_config.h` 的 `ROBOT_OLED_ADDRESS`（0x3C）和 `ROBOT_MPU_ADDRESS`（0x68），不在SysConfig中填写。
+软件器件地址分别在 `Devices/oled.c` 顶部的 `ROBOT_OLED_ADDRESS`（0x3C）和 `Devices/mpu6050.c` 顶部的 `ROBOT_MPU_ADDRESS`（0x68），不在SysConfig中填写。
 OLED分成控制字节+最多7字节数据的小包；MPU6050的14字节接收持续排空RX FIFO。超时会结束本次事务并返回错误，不会无限等待。
 
 ## 9. 中断及工程核对
